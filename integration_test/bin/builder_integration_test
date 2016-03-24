@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path("../../../lib", __FILE__)
+
+spec_dir = File.expand_path("../../spec", __FILE__)
+
+list = if ARGV[0] == 'all'
+  Dir.entries(spec_dir).grep(/_spec\.rb/)
+else
+  Dir.entries(spec_dir).grep(/^#{ARGV[0]}_spec\.rb/)
+end
+
+if list.empty?
+  puts "[ERROR]: invalid arguments"
+  exit 1
+end
+
+list.each do |f|
+  puts "---------------"
+  puts "spec : #{f}"
+  puts "---------------"
+  system("bundle exec rspec #{File.expand_path("#{spec_dir}/#{f}", __FILE__)}")
+end

@@ -1,0 +1,97 @@
+---
+networks:
+  linux:
+    network_type: "linux"
+    bridge_name: "brlocal"
+    ipv4_network: "192.168.1.0"
+    prefix: 24
+  manage:
+    network_type: "linux"
+    bridge_name: "brmanage"
+    ipv4_network: "172.16.0.0"
+    ipv4_gateway: "172.16.0.1"
+    prefix: 24
+    masquerade: true
+  aws:
+    network_type: "aws"
+    ipv4_network: "192.168.100.0"
+    prefix: 24
+    subnet_id:
+nodes:
+  bare_metal:
+    ssh:
+      ip: "172.16.64.10"
+      user: "root"
+      key: "/path/to/private_key3"
+  dcmgr:
+    provision: 
+      spec:
+        type: "aws"
+        image_id: "ami-4d5d577d"
+        instance_type: "t2.micro"
+        key_pair: 'axsh-tis'
+        nics:
+          eth0:
+            network: "aws"
+      provisioner: "shell"
+      data: "/path/to/provision_script"
+    ssh:
+      user: "ec2-user"
+      key: "/path/to/private_key2"
+  hva:
+    provision: 
+      spec:
+        type: "kvm"
+        os: "centos6.7"
+        disk: 30
+        memory: 4000
+        nics:
+          eth0:
+            network: "linux"
+            device: "eth0"
+            bootproto: "static"
+            onboot: "yes"
+            ipaddr: "192.168.1.3"
+            prefix: 24
+            mac_address: "52:54:00:00:00:01"
+          eth1:
+            network: "manage"
+            device: "eth1"
+            bootproto: "static"
+            onboot: "yes"
+            defroute: "yes"
+            ipaddr: "172.16.0.3"
+            gateway: "172.16.0.1"
+            prefix: 24
+            mac_address: "52:54:00:00:00:02"
+      provisioner: "shell"
+      data: "/path/to/provision_script"
+    ssh:
+      from: "bare_metal"
+      ip: "172.16.0.2"
+      user: "root"
+      key: "/path/to/private_key"
+  wanedge:
+    provision: 
+      spec:
+        type: "aws"
+        image_id: "ami-4d5d577d"
+        instance_type: "t2.micro"
+        key_pair: 'axsh-tis'
+        nics:
+          eth0:
+            network: "aws"
+      provisioner: "shell"
+      data: "/path/to/provision_script_wanedge"
+    ssh:
+      user: "ec2-user"
+      key: "/path/to/private_key2"
+vpc_info:
+  name: "buider_test"
+  image_id: "ami-4d5d577d"
+  vpc_id:
+  route_table_id:
+  igw_id:
+  secg_id:
+  key_pair: 'axsh-tis'
+  key: "/path/to/private_key2"

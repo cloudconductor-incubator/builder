@@ -1,0 +1,63 @@
+---
+networks:
+  linux_internal:
+    network_type: linux
+    bridge_name: brlocal
+  linux_manage:
+    network_type: linux
+    bridge_name: brmanage
+  linux_wanedge:
+    network_type: linux
+    bridge_name: braaaa
+  aws:
+    network_type: vpc
+    subnet_id: subnet-test
+nodes:
+  test1:
+    provision:
+      provisioned: false
+      script:
+      spec:
+        type: aws
+        instance_type:
+        key_pair:
+        nics:
+          eth0:
+            network: aws
+    ssh:
+      user:
+      key:
+      ip:
+  bare_metal:
+    ssh:
+      ip:
+      user:
+      key:
+      sudo_password: false
+  test2:
+    provision:
+      provisioned: false
+      script:
+      spec:
+        type: kvm
+        disk:
+        memory:
+        nics:
+          eth0:
+            network: linux_manage
+            device:
+            bootproto:
+            onboot:
+            ipaddr:
+            prefix:
+            defroute:
+            mac_address:
+    ssh:
+      from:
+      ip:
+      user:
+      key:
+
+post_phase:
+  type: executable
+  file:
