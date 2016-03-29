@@ -2,6 +2,8 @@
 
 Builder is a toolset to provision your own systems on AWS and on_premise servers.
 
+Currently development is continued in [this repository](https://github.com/axsh/builder).
+
 # Usage
 
 Clone the repository and do `bundle install`.
